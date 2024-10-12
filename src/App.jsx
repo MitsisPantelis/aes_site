@@ -1,35 +1,51 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+// src/App.jsx
+import { useState } from 'react';
+import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
+import Homepage from './pages/Homepage';
+import AESEncode from './pages/AESEncode';
+import AESDecode from './pages/AESDecode';
+import AESStepByStep from './pages/AESStepByStep';
+import './App.css';
+import logo from './assets/AES_Logo.jpg';
 
 function App() {
-  const [count, setCount] = useState(0)
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+
+  const toggleMenu = () => {
+    setIsMenuOpen(!isMenuOpen);
+  };
 
   return (
-    <>
-      <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
+    <Router>
+      <div className="App">
+        {/* Navbar */}
+        <nav className={`navbar ${isMenuOpen ? 'active' : ''}`}>
+          <div className="menu-icon" onClick={toggleMenu}>
+            &#9776; {/* Hamburger icon */}
+          </div>
+          <ul>
+            <li>
+              <Link to="/" onClick={toggleMenu}>
+                <img src={logo} alt="Logo" className="navbar-logo" />
+              </Link>
+            </li>
+            <li><Link to="/" onClick={toggleMenu}>Home</Link></li>
+            <li><Link to="/encode" onClick={toggleMenu}>AES Encode</Link></li>
+            <li><Link to="/decode" onClick={toggleMenu}>AES Decode</Link></li>
+            <li><Link to="/step-by-step" onClick={toggleMenu}>AES Step-by-Step</Link></li>
+          </ul>
+        </nav>
+
+        {/* Routes */}
+        <Routes>
+          <Route path="/" element={<Homepage />} />
+          <Route path="/encode" element={<AESEncode />} />
+          <Route path="/decode" element={<AESDecode />} />
+          <Route path="/step-by-step" element={<AESStepByStep />} />
+        </Routes>
       </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
+    </Router>
+  );
 }
 
-export default App
+export default App;
