@@ -15,3 +15,5 @@ Run the following command in your project directory to install react-router-dom:
 
 
 npm install react-router-dom
+npm install @mui/icons-material
+npm install crypto-js
