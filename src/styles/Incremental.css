@@ -1,0 +1,19 @@
+.incremental-container {
+  display: flex;
+  height: 100vh;
+  width: 100%;
+  padding: 0;
+  margin: 0;
+  background-color: #D5E6EC;
+}
+.content {
+  flex-grow: 1;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+.buttons-container {
+  margin-top: auto;
+  margin-bottom: 64px;
+}

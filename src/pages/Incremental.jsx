@@ -1,120 +1,164 @@
 import React, { useState } from 'react';
-import { Container, Typography, TextField, Button, Box, Radio, RadioGroup, FormControlLabel, FormControl, FormLabel, Select, MenuItem } from '@mui/material';
-import { aesEncryptStepByStep } from '../utils/aesManual';
+import { Typography, Box, Button } from '@mui/material';
+import NavbarV2 from '../components/NavbarV2';
+import './../styles/Incremental.css';
+const steps = ['SubBytes', 'ShiftRows', 'MixColumns', 'AddRoundKey'];
+const finalRoundSteps = ['SubBytes', 'ShiftRows', 'AddRoundKey'];
+const keyScheduleSteps = ['Key Expansion', 'AddRoundKey'];
 function Incremental() {
-  const [inputText, setInputText] = useState('Default text');
-  const [key, setKey] = useState('DefaultKey123456');
-  const [mode, setMode] = useState('encode');
-  const [algorithm, setAlgorithm] = useState('ECB');
-  const [iv, setIv] = useState('DefaultIV12345678');
-  const [keySize, setKeySize] = useState(128);
-  const [steps, setSteps] = useState([]);
-  const handleInputChange = (event) => {
-    setInputText(event.target.value);
+  const [currentRound, setCurrentRound] = useState(0); // Start from 0 to include Input and KeySchedule
+  const [currentStep, setCurrentStep] = useState('Input');
+  const inputText = 'Test';
+  const key = 'DefaultKey123456';
+  const algorithm = 'ECB';
+  const keySize = 128; // Change this value to 192 or 256 to test different key sizes
+  const mode = 'Encode';
+  const totalRounds = keySize === 128 ? 10 : keySize === 192 ? 12 : 14; // Determine total rounds based on key size
+  const handleNextRound = () => {
+    if (currentRound === 0) {
+      setCurrentRound(1);
+      setCurrentStep('Key Expansion');
+    } else {
+      setCurrentRound((prev) => Math.min(prev + 1, totalRounds));
+      setCurrentStep('SubBytes');
+    }
   };
-  const handleKeyChange = (event) => {
-    setKey(event.target.value);
+  const handlePreviousRound = () => {
+    if (currentRound === 1) {
+      setCurrentRound(0);
+      setCurrentStep('Input');
+    } else {
+      setCurrentRound((prev) => Math.max(prev - 1, 1));
+      setCurrentStep('AddRoundKey');
+    }
   };
-  const handleModeChange = (event) => {
-    setMode(event.target.value);
+  const handleNextStep = () => {
+    if (currentRound === 0) {
+      setCurrentRound(1);
+      setCurrentStep('Key Expansion');
+    } else {
+      const currentSteps = currentRound === totalRounds ? finalRoundSteps : currentRound === 1 ? keyScheduleSteps : steps;
+      const currentIndex = currentSteps.indexOf(currentStep);
+      if (currentIndex < currentSteps.length - 1) {
+        setCurrentStep(currentSteps[currentIndex + 1]);
+      } else if (currentRound < totalRounds) {
+        handleNextRound();
+      }
+    }
   };
-  const handleAlgorithmChange = (event) => {
-    setAlgorithm(event.target.value);
+  const handlePreviousStep = () => {
+    if (currentRound === 1 && currentStep === 'Key Expansion') {
+      setCurrentRound(0);
+      setCurrentStep('Input');
+    } else if (currentRound === 1 && currentStep === 'SubBytes') {
+      setCurrentRound(1);
+      setCurrentStep('Key Expansion');
+    } else {
+      const currentSteps = currentRound === totalRounds ? finalRoundSteps : currentRound === 1 ? keyScheduleSteps : steps;
+      const currentIndex = currentSteps.indexOf(currentStep);
+      if (currentIndex > 0) {
+        setCurrentStep(currentSteps[currentIndex - 1]);
+      } else if (currentRound > 1) {
+        handlePreviousRound();
+      }
+    }
   };
-  const handleIvChange = (event) => {
-    setIv(event.target.value);
+  const handleFinalRound = () => {
+    setCurrentRound(totalRounds);
+    setCurrentStep('SubBytes');
   };
-  const handleKeySizeChange = (event) => {
-    setKeySize(event.target.value);
+  const handleInput = () => {
+    setCurrentRound(0);
+    setCurrentStep('Input');
   };
-  const handleSubmit = () => {
-    try {
-      const steps = aesEncryptStepByStep(inputText, key, keySize);
-      setSteps(steps);
-    } catch (error) {
-      alert(error.message);
+  const toHex = (str) => {
+    return str.split('').map(char => char.charCodeAt(0).toString(16).padStart(2, '0')).join(' ');
+  };
+  const renderContent = () => {
+    if (currentRound === 0 && currentStep === 'Input') {
+      return (
+        <Box>
+          <Typography variant="h6" component="h2" align="center">
+            Input Values
+          </Typography>
+          <Typography variant="body1" component="p" align="center">
+            Text: {inputText}
+          </Typography>
+          <Typography variant="body1" component="p" align="center">
+            Text (Hex): {toHex(inputText)}
+          </Typography>
+          <Typography variant="body1" component="p" align="center">
+            Key: {key}
+          </Typography>
+          <Typography variant="body1" component="p" align="center">
+            Key (Hex): {toHex(key)}
+          </Typography>
+          <Typography variant="body1" component="p" align="center">
+            Algorithm: {algorithm}
+          </Typography>
+          <Typography variant="body1" component="p" align="center">
+            Key Size: {keySize} bits
+          </Typography>
+          <Typography variant="body1" component="p" align="center">
+            Mode: {mode}
+          </Typography>
+        </Box>
+      );
+    } else if (currentStep === 'Key Expansion' || currentStep === 'AddRoundKey') {
+      return (
+        <Box>
+          <Typography variant="h6" component="h2" align="center">
+            Key Schedule - {currentStep}
+          </Typography>
+        </Box>
+      );
+    } else {
+      return (
+        <Box>
+          <Typography variant="h6" component="h2" align="center">
+            Round {currentRound} - Step: {currentStep}
+          </Typography>
+        </Box>
+      );
     }
   };
   return (
-    <Container>
-      <Typography variant="h4" component="h1" gutterBottom>
-        Step-by-Step AES
-      </Typography>
-      <Box component="form" noValidate autoComplete="off">
-        <TextField
-          fullWidth
-          margin="normal"
-          label="Enter text"
-          variant="outlined"
-          value={inputText}
-          onChange={handleInputChange}
-        />
-        <TextField
-          fullWidth
-          margin="normal"
-          label="Enter key"
-          variant="outlined"
-          value={key}
-          onChange={handleKeyChange}
-          helperText={`Key length must be ${keySize / 8} characters.`}
-        />
-        <FormControl component="fieldset" margin="normal">
-          <FormLabel component="legend">Mode</FormLabel>
-          <RadioGroup row aria-label="mode" name="mode" value={mode} onChange={handleModeChange}>
-            <FormControlLabel value="encode" control={<Radio />} label="Encode" />
-            <FormControlLabel value="decode" control={<Radio />} label="Decode" />
-          </RadioGroup>
-        </FormControl>
-        <FormControl fullWidth margin="normal">
-          <FormLabel component="legend">Algorithm</FormLabel>
-          <Select
-            value={algorithm}
-            onChange={handleAlgorithmChange}
-            variant="outlined"
-          >
-            <MenuItem value="ECB">ECB</MenuItem>
-            <MenuItem value="CBC">CBC</MenuItem>
-          </Select>
-        </FormControl>
-        {algorithm === 'CBC' && (
-          <TextField
-            fullWidth
-            margin="normal"
-            label="Enter IV"
-            variant="outlined"
-            value={iv}
-            onChange={handleIvChange}
-          />
-        )}
-        <FormControl fullWidth margin="normal">
-          <FormLabel component="legend">Key Size</FormLabel>
-          <Select
-            value={keySize}
-            onChange={handleKeySizeChange}
-            variant="outlined"
-          >
-            <MenuItem value={128}>128 bits</MenuItem>
-            <MenuItem value={192}>192 bits</MenuItem>
-            <MenuItem value={256}>256 bits</MenuItem>
-          </Select>
-        </FormControl>
-        <Button variant="contained" color="primary" onClick={handleSubmit} fullWidth>
-          Submit
-        </Button>
-      </Box>
-      {steps.length > 0 && (
-        <Box mt={4}>
-          <Typography variant="h6" component="h2">
-            Steps
-          </Typography>
-          {steps.map((step, index) => (
-            <Typography key={index} variant="body1" component="p">
-              Round {step.round}: {JSON.stringify(step.state)}
-            </Typography>
-          ))}
+    <div className="incremental-container">
+      <NavbarV2
+        currentRound={currentRound}
+        currentStep={currentStep}
+        inputText={inputText}
+        key={key}
+        algorithm={algorithm}
+        keySize={keySize}
+        mode={mode}
+        setCurrentRound={setCurrentRound}
+        setCurrentStep={setCurrentStep}
+      />
+      <div className="content">
+        {renderContent()}
+        <Box mt={2} display="flex" justifyContent="center" alignItems="center" className="buttons-container">
+          <Button variant="contained" style={{ backgroundColor: '#4B0082', color: 'white', margin: '8px' }} onClick={handleInput}>
+            Input
+          </Button>
+          <Button variant="contained" color="primary" style={{ margin: '8px' }} onClick={handlePreviousRound}>
+            Previous Round
+          </Button>
+          <Button variant="contained" color="primary" style={{ margin: '8px' }} onClick={handlePreviousStep}>
+            Previous Step
+          </Button>
+          <Button variant="contained" color="primary" style={{ margin: '8px' }} onClick={handleNextStep}>
+            Next Step
+          </Button>
+          <Button variant="contained" color="primary" style={{ margin: '8px' }} onClick={handleNextRound}>
+            Next Round
+          </Button>
+          <Button variant="contained" color="secondary" style={{ margin: '8px' }} onClick={handleFinalRound}>
+            Final Round
+          </Button>
         </Box>
-      )}
-    </Container>
+      </div>
+    </div>
   );
 }
 export default Incremental;
