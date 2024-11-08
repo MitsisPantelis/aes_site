@@ -1,0 +1,34 @@
+.sidebar {
+    width: 150px; /* Further reduced width */
+    background-color: #643FDC; /* Dark purple */
+    color: white;
+    padding: 8px; /* Further reduced padding */
+    border-radius: 20px;
+  }
+  .sidebar .MuiListItem-root {
+    color: white;
+    padding: 4px 8px; /* Reduced padding for list items */
+  }
+  .sidebar .MuiListItem-root:hover {
+    background-color: #6A0DAD; /* Lighter purple on hover */
+    border-radius: 10px;
+  }
+  .round-box {
+    background-color: #4B0082; /* Darker purple for round boxes */
+    border-radius: 10px;
+    padding: 4px; /* Further reduced padding */
+    margin-bottom: 8px; /* Further reduced margin */
+  }
+  .step-item {
+    color: white;
+  }
+  .active-step {
+    background-color: #6A0DAD; /* Highlight active step */
+    border-radius: 10px;
+  }
+  .round-box h6 {
+    font-size: 14px; /* Reduced font size */
+  }
+  .round-box p {
+    font-size: 12px; /* Reduced font size */
+  }

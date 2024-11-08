@@ -4,3 +4,27 @@ body, html {
     width: 100;
     height: 100%;
   }
+
+  html, body {
+    height: 100%;
+    margin: 0;
+    overflow: hidden; /* Prevent scrolling */
+  }
+  #root {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+  }
+  .stepbystep-container {
+    display: flex;
+    height: 100%; /* Ensure the container takes full height */
+    overflow: hidden; /* Prevent scrolling */
+  }
+  .sidebar {
+    height: 100%; /* Ensure the sidebar takes full height */
+    overflow-y: auto; /* Allow scrolling within the sidebar if needed */
+  }
+  .content {
+    flex-grow: 1;
+    overflow-y: auto; /* Allow scrolling within the content if needed */
+  }
