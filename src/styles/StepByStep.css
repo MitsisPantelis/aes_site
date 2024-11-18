@@ -1,37 +1,102 @@
 .stepbystep-container {
-    display: flex;
-    height: 100vh;
-    width: 100%;
-    padding: 0;
-    margin: 0;
-    background-color: #D5E6EC;
-  }
-  .sidebar {
-    width: 200px;
-    background-color: #643FDC; /* Dark purple */
-    color: white;
-    padding: 16px;
-    border-radius: 20px;
-  }
-  .sidebar .MuiListItem-root {
-    color: white;
-  }
-  .sidebar .MuiListItem-root:hover {
-    background-color: #6A0DAD; /* Lighter purple on hover */
-    border-radius: 10px;
-  }
-  .round-container {
-    margin-bottom: 8px;
-  }
-  .steps-container {
-    background-color: #4B0082; /* Darker purple for steps container */
-    border-radius: 10px;
-    padding: 8px;
-  }
-  .step-item {
-    color: white;
-  }
-  .content {
-    flex-grow: 1;
-    padding: 16px;
-  }
+  display: flex;
+  height: 100vh;
+  width: 100%;
+  padding: 0;
+  margin: 0;
+  background-color: #d5e6ec;
+}
+
+.sidebar {
+  width: 200px;
+  background-color: #643fdc; /* Dark purple */
+  color: white;
+  padding: 16px;
+  border-radius: 20px;
+}
+
+.sidebar .MuiListItem-root {
+  color: white;
+}
+
+.sidebar .MuiListItem-root:hover {
+  background-color: #6a0dad; /* Lighter purple on hover */
+  border-radius: 10px;
+}
+
+.round-container {
+  margin-bottom: 8px;
+}
+
+.steps-container {
+  background-color: #4b0082; /* Darker purple for steps container */
+  border-radius: 10px;
+  padding: 8px;
+}
+
+.step-item {
+  color: white;
+}
+
+.content {
+  flex-grow: 1;
+  padding: 16px;
+}
+
+.matrix-container {
+  display: flex;
+  justify-content: space-between;
+  /* margin-top: 16px; */
+  margin: 16px;
+}
+
+.matrix {
+  flex: 1;
+  margin: 0 8px;
+}
+
+.matrix-table {
+  border-collapse: collapse;
+  margin: 8px 0;
+  width: 120px; /* Set a fixed width for the table */
+}
+
+.matrix-table td {
+  border: 1px solid #ddd;
+  padding: 8px;
+  text-align: center;
+  width: 30px; /* Set a fixed width for the cells */
+  height: 30px; /* Set a fixed height for the cells */
+  transition: background-color 0.3s ease;
+}
+
+.matrix-table td:hover {
+  background-color: #f0f0f0;
+}
+
+.matrix-table td.highlighted {
+  background-color: red;
+}
+
+.matrix-title {
+  margin-top: 8px;
+  margin-bottom: 0;
+}
+
+
+.matrix-table.small td {
+  width: 20px;
+  height: 20px;
+  font-size: 10px;
+  text-align: center;
+  border: 1px solid #ddd;
+}
+
+.matrix-table.small th {
+  width: 20px;
+  height: 20px;
+  font-size: 10px;
+  text-align: center;
+  border: 1px solid #ddd;
+  background-color: #f0f0f0;
+}
